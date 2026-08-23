@@ -53,7 +53,7 @@ export const CONTROL_TAGS = [
   DISABLE_DOWNLOAD_BUTTON_TAG,
 ];
 // System tags are special tags that are not available to the user.
-export const SYSTEM_TAGS = [LBRY_FIRST_TAG, ...Object.values(VISIBILITY_TAGS), ...Object.values(SCHEDULED_TAGS)];
+export const SYSTEM_TAGS = [...Object.values(VISIBILITY_TAGS), ...Object.values(SCHEDULED_TAGS)];
 export const INTERNAL_TAGS = [
   ...CONTROL_TAGS,
   ...SYSTEM_TAGS,
