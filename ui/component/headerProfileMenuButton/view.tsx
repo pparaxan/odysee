@@ -105,13 +105,6 @@ export default function HeaderProfileMenuButton() {
       )}
 
       <div className="header__buttons">
-        {!isMobile && (
-          <Tooltip title={currentTheme === 'light' ? __('Dark') : __('Light')}>
-            <Button className="header__navigationItem--icon" onClick={handleThemeToggle}>
-              <Icon icon={currentTheme === 'light' ? ICONS.DARK : ICONS.LIGHT} />
-            </Button>
-          </Tooltip>
-        )}
         {notificationsEnabled && !isMobile && <NotificationHeaderButton />}
 
         {(isMobile || authenticated) && (
