@@ -3,12 +3,7 @@ import { WEB_PUBLISH_SIZE_LIMIT_GB } from 'config';
 import { useAppDispatch } from 'redux/hooks';
 import { doToast } from 'redux/actions/notifications';
 import { doUpdatePublishForm } from 'redux/actions/publish';
-import {
-  cacheOptimizedFile,
-  cacheHlsPackage,
-  CachedHlsPackage,
-  CachedHlsTier,
-} from 'util/uploadCache';
+import { cacheOptimizedFile, cacheHlsPackage, CachedHlsPackage, CachedHlsTier } from 'util/uploadCache';
 import './style.scss';
 
 // Lazy-import mediabunny to keep it out of the main bundle
@@ -354,7 +349,8 @@ export default function VideoOptimizer({ file, fileBitrate, fileSizeTooBig, vari
 
       cachedTiers.forEach((tier, idx) => {
         masterM3u8 += `#EXT-X-STREAM-INF:BANDWIDTH=${tier.bitrate},RESOLUTION=${tier.width}x${tier.height},CLOSED-CAPTIONS=NONE\nv${idx}.m3u8\n`;
-        playlists[`v${idx}.m3u8`] = `#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:10\n#EXTINF:10.0,\nv${idx}.mp4\n#EXT-X-ENDLIST\n`;
+        playlists[`v${idx}.m3u8`] =
+          `#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:10\n#EXTINF:10.0,\nv${idx}.mp4\n#EXT-X-ENDLIST\n`;
       });
 
       const hlsPackage: CachedHlsPackage = {
@@ -442,7 +438,7 @@ export default function VideoOptimizer({ file, fileBitrate, fileSizeTooBig, vari
             <p className="publish-status-card__description">
               {__(
                 'Transcode your video locally before publishing so viewers have ' +
-                'multiple quality choices. Do note that if you choose to transcode, '
+                  'multiple quality choices. Do note that if you choose to transcode, '
               )}
             </p>
           </div>
@@ -464,8 +460,8 @@ export default function VideoOptimizer({ file, fileBitrate, fileSizeTooBig, vari
               <p className="video-optimizer__option-desc">
                 {__(
                   'Encodes your video into multiple resolutions,' +
-                  ' it\'ll use your local machine\'s compute to do so.' +
-                  ' Viewers however will have full quality controls in the player.'
+                    " it'll use your local machine's compute to do so." +
+                    ' Viewers however will have full quality controls in the player.'
                 )}
               </p>
               <div className="video-optimizer__stats">
@@ -496,9 +492,7 @@ export default function VideoOptimizer({ file, fileBitrate, fileSizeTooBig, vari
             <div className="video-optimizer__option-info">
               <strong>{__('Optimized Source Quality')}</strong>
               <p className="video-optimizer__option-desc">
-                {__(
-                  'Compresses and downscales the video to one with a standard bitrate for fast buffering.'
-                )}
+                {__('Compresses and downscales the video to one with a standard bitrate for fast buffering.')}
               </p>
               <div className="video-optimizer__stats">
                 <div className="video-optimizer__stat">
@@ -533,9 +527,7 @@ export default function VideoOptimizer({ file, fileBitrate, fileSizeTooBig, vari
               />
               <div className="video-optimizer__option-info">
                 <strong>{__('Original Source Only')}</strong>
-                <p className="video-optimizer__option-desc">
-                  {__('Publish your exact video as-is.')}
-                </p>
+                <p className="video-optimizer__option-desc">{__('Publish your exact video as-is.')}</p>
               </div>
             </label>
           )}

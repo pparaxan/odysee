@@ -235,9 +235,7 @@ export async function makeV4UploadRequest(token: string, params: FileUploadSdkPa
       switch (status.status) {
         case 'success': {
           const claimId =
-            (status.sdkResult as any)?.outputs?.[0]?.claim_id ||
-            (status.sdkResult as any)?.claim_id ||
-            params.claim_id;
+            (status.sdkResult as any)?.outputs?.[0]?.claim_id || (status.sdkResult as any)?.claim_id || params.claim_id;
           if (params.hlsPackage && claimId) {
             uploadHlsPackage(token, claimId, params.hlsPackage).catch(() => {});
           }

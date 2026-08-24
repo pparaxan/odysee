@@ -470,11 +470,7 @@ export function yieldThread(durationMs: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, durationMs));
 }
 
-export async function uploadHlsPackage(
-  authToken: string,
-  claimId: string,
-  hlsPackage: any
-): Promise<boolean> {
+export async function uploadHlsPackage(authToken: string, claimId: string, hlsPackage: any): Promise<boolean> {
   if (!hlsPackage || !claimId) return false;
   try {
     const formData = new FormData();
