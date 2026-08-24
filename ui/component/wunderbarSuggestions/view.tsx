@@ -346,22 +346,6 @@ export default function WunderBarSuggestions(props: Props) {
               })}
             >
               <ComboboxList>
-                {!noBottomLinks && (
-                  <div className="wunderbar__bottom-links">
-                    <ComboboxOption value={term} className="wunderbar__more-results">
-                      <Button ref={viewResultsRef} button="link" label={__('View All Results')} />
-                    </ComboboxOption>
-                    <ComboboxOption value={`${TAG_SEARCH_PREFIX}${term}`} className="wunderbar__more-results">
-                      <Button ref={exploreTagRef} className="wunderbar__tag-search" button="link">
-                        {__('Search tag')}
-                        <div className="tag">{term.split(' ').join('')}</div>
-                      </Button>
-                    </ComboboxOption>
-                  </div>
-                )}
-
-                <hr className="wunderbar__top-separator" />
-
                 {uriFromQueryIsValid && !noTopSuggestion ? <WunderbarTopSuggestion query={nameFromQuery} /> : null}
 
                 <div className="wunderbar__label">{__('Search Results')}</div>
@@ -377,6 +361,22 @@ export default function WunderBarSuggestions(props: Props) {
                       .map((uri) => <WunderbarSuggestion key={uri} uri={uri} />)
                   : null}
               </ComboboxList>
+
+              <hr className="wunderbar__top-separator" />
+
+              {!noBottomLinks && (
+                <div className="wunderbar__bottom-links">
+                  <ComboboxOption value={term} className="wunderbar__more-results">
+                    <Button ref={viewResultsRef} button="link" label={__('View All Results')} />
+                  </ComboboxOption>
+                  <ComboboxOption value={`${TAG_SEARCH_PREFIX}${term}`} className="wunderbar__more-results">
+                    <Button ref={exploreTagRef} className="wunderbar__tag-search" button="link">
+                      {__('Search tag')}
+                      <div className="tag">{term.split(' ').join('')}</div>
+                    </Button>
+                  </ComboboxOption>
+                </div>
+              )}
             </ComboboxPopover>
           )}
         </Combobox>
