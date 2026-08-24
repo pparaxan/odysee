@@ -133,7 +133,7 @@ If you also want IDE integration, check out
 There are a few tools integrated to the project that will ease the process of
 debugging:
 
-- [Chrome DevTools](developer.chrome.com/docs/devtools)
+- [Chrome DevTools](https://developer.chrome.com/docs/devtools)
   - Also available for the main process as a
     [remote target](chrome://inspect/#devices).
 - [Vite DevTools](https://devtools.vite.dev)
