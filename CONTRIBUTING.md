@@ -121,14 +121,14 @@ Staged files are automatically formatted before commit via the pre-commit hook.
 You can also use the following command:
 
 ```sh
-pnpm format
+pnpm fmt
 ```
 
 for applying formatting rules to the entire project's code. For formatting a
 specific file or directory, use:
 
 ```sh
-pnpm oxfmt 'glob/pattern'
+pnpm fmt 'glob/pattern'
 ```
 
 If you also want IDE integration, check out
