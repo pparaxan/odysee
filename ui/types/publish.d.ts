@@ -32,6 +32,7 @@ type PublishState = {
   nsfw: boolean;
   tags: Array<Tag>;
   optimize: boolean;
+  hlsPackage?: any;
   useLBRYUploader: boolean;
   publishType: PublishType;
   [key: string]: any;

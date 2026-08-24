@@ -9,6 +9,7 @@ import {
   yieldThread,
   resolveFileToUpload,
   isEditingMetaOnly,
+  uploadHlsPackage,
 } from './publish-v4-tasks';
 import {
   doUpdateUploadAdd as add,
@@ -232,9 +233,17 @@ export async function makeV4UploadRequest(token: string, params: FileUploadSdkPa
       const status: PublishStatus = await checkPublishStatus(token, publishId);
 
       switch (status.status) {
-        case 'success':
+        case 'success': {
+          const claimId =
+            (status.sdkResult as any)?.outputs?.[0]?.claim_id ||
+            (status.sdkResult as any)?.claim_id ||
+            params.claim_id;
+          if (params.hlsPackage && claimId) {
+            uploadHlsPackage(token, claimId, params.hlsPackage).catch(() => {});
+          }
           dispatch(remove(guid));
           return status.sdkResult;
+        }
 
         case 'pending':
           await yieldThread(SDK_STATUS_RETRY_INTERVAL_MS);

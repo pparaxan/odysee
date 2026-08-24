@@ -94,6 +94,7 @@ const defaultState: PublishState = {
   publishSuccess: false,
   publishError: undefined,
   optimize: false,
+  hlsPackage: null,
   useLBRYUploader: false,
   currentUploads: {},
   visibility: 'public',
