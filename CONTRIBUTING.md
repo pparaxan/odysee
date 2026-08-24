@@ -97,15 +97,9 @@ You can lint all the project's sources at any time by running:
 pnpm lint
 ```
 
-If you desire to lint a specific file or directory you can use:
-
-```sh
-pnpm oxlint 'glob/pattern'
-```
-
-In addition to those commands, staged files are automatically linted before
-commit. Please take the time to fix all staged files' linting problems before
-committing or suppress them if necessary.
+Staged files are automatically linted before commit. Please take the time to fix
+all staged files' linting problems before committing or suppress them if
+necessary.
 
 If you want the linting problems to show up on your IDE or text editor, check
 out [Oxlint's supported editors](https://oxc.rs/docs/guide/usage/linter/editors.html).
