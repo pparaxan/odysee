@@ -54,6 +54,7 @@ export default function WunderBarSuggestions(props: Props) {
   const dispatch = useAppDispatch();
   const languageSetting = useAppSelector(selectLanguage);
   const searchInLanguage = useAppSelector((state) => selectClientSetting(state, SETTINGS.SEARCH_IN_LANGUAGE));
+  const hideSearchChannels = useAppSelector((state) => selectClientSetting(state, SETTINGS.HIDE_SEARCH_CHANNELS));
   const showMature = useAppSelector(selectShowMatureContent);
   const claimsByUri = useAppSelector(selectClaimsByUri);
   const subscriptionUris: Array<string> = useAppSelector(selectSubscriptionUris) || [];
@@ -73,7 +74,11 @@ export default function WunderBarSuggestions(props: Props) {
   const [term, setTerm] = React.useState(queryFromUrl);
   const [debouncedTerm, setDebouncedTerm] = React.useState('');
   const searchSize = isMobile ? 20 : 5;
-  const additionalOptions = getAdditionalOptions(channelsOnly, searchInLanguage ? languageSetting : null);
+  const additionalOptions = getAdditionalOptions(
+    channelsOnly,
+    hideSearchChannels,
+    searchInLanguage ? languageSetting : null
+  );
   const { results, loading } = useLighthouse(debouncedTerm, showMature, searchSize, additionalOptions, 0);
   const noResults = debouncedTerm && !loading && results && results.length === 0;
   const nameFromQuery = debouncedTerm && debouncedTerm.trim().replace(/\s+/g, '').replace(/:/g, '#');
@@ -99,12 +104,18 @@ export default function WunderBarSuggestions(props: Props) {
   const isTyping = debouncedTerm !== term;
   const showPlaceholder = isTyping || loading;
 
-  function getAdditionalOptions(channelsOnly: boolean | null | undefined, language: string | null | undefined) {
+  function getAdditionalOptions(
+    channelsOnly: boolean | null | undefined,
+    hideChannels: boolean | null | undefined,
+    language: string | null | undefined
+  ) {
     const additionalOptions: Record<string, any> = {};
 
     if (channelsOnly) {
       additionalOptions.isBackgroundSearch = false;
       additionalOptions[SEARCH_OPTIONS.CLAIM_TYPE] = SEARCH_OPTIONS.INCLUDE_CHANNELS;
+    } else if (hideChannels) {
+      additionalOptions[SEARCH_OPTIONS.CLAIM_TYPE] = SEARCH_OPTIONS.INCLUDE_FILES;
     }
 
     if (language) {
@@ -290,18 +301,20 @@ export default function WunderBarSuggestions(props: Props) {
     if (subscriptionUris && term && term.length > 1) {
       let subscriptionResults = [];
       subscriptionUris.map((uri) => {
+        const claim = claimsByUri[uri];
         if (
-          claimsByUri[uri] &&
-          subscriptionResults.indexOf(claimsByUri[uri].permanent_url) === -1 &&
-          (claimsByUri[uri].name.toLowerCase().includes(term.toLowerCase()) ||
-            claimsByUri[uri].value?.title?.toLowerCase().includes(term.toLowerCase()))
+          claim &&
+          (!hideSearchChannels || claim.value_type !== 'channel') &&
+          subscriptionResults.indexOf(claim.permanent_url) === -1 &&
+          (claim.name.toLowerCase().includes(term.toLowerCase()) ||
+            claim.value?.title?.toLowerCase().includes(term.toLowerCase()))
         ) {
-          subscriptionResults.push(claimsByUri[uri].permanent_url);
+          subscriptionResults.push(claim.permanent_url);
         }
       });
       setSubscriptionResults(subscriptionResults.slice(0, isMobile ? 5 : 10));
     } // eslint-disable-next-line react-hooks/exhaustive-deps -- @see TODO_NEED_VERIFICATION
-  }, [term]);
+  }, [term, hideSearchChannels, subscriptionUris, claimsByUri, isMobile]);
   React.useEffect(() => {
     if (results && subscriptionResults) {
       subscriptionResults.map((subscription) => {
@@ -338,7 +351,7 @@ export default function WunderBarSuggestions(props: Props) {
             />
           )}
 
-          {isFocused && (
+          {isFocused && term && (
             <ComboboxPopover
               portal={false}
               className={classnames('wunderbar__suggestions', {
@@ -346,19 +359,21 @@ export default function WunderBarSuggestions(props: Props) {
               })}
             >
               <ComboboxList>
-                {uriFromQueryIsValid && !noTopSuggestion ? <WunderbarTopSuggestion query={nameFromQuery} /> : null}
-
-                <div className="wunderbar__label">{__('Search Results')}</div>
+                {uriFromQueryIsValid && !noTopSuggestion ? (
+                  <WunderbarTopSuggestion query={nameFromQuery} hideChannels={hideSearchChannels} />
+                ) : null}
 
                 {subscriptionResults.length > 0 &&
-                  subscriptionResults.map((uri) => <WunderbarSuggestion key={uri} uri={uri} />)}
+                  subscriptionResults.map((uri) => (
+                    <WunderbarSuggestion key={uri} uri={uri} hideChannels={hideSearchChannels} />
+                  ))}
 
                 {showPlaceholder && term.length > LIGHTHOUSE_MIN_CHARACTERS ? <Spinner type="small" /> : null}
 
                 {!showPlaceholder && results
                   ? results
                       .slice(0, isMobile ? 20 - subscriptionResults.length : 10 - subscriptionResults.length)
-                      .map((uri) => <WunderbarSuggestion key={uri} uri={uri} />)
+                      .map((uri) => <WunderbarSuggestion key={uri} uri={uri} hideChannels={hideSearchChannels} />)
                   : null}
               </ComboboxList>
 
