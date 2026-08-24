@@ -54,13 +54,13 @@ following system:
   [Help Wanted](https://github.com/OdyseeTeam/odysee-frontend/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+no%3Aassignee)
   issue is ranked on a scale from zero to four (in progress)
 
-| Level (in progress) | Description |
-| ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| [**level 0**](https://github.com/OdyseeTeam/odysee-frontend/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+label%3A%22level%3A+0%22+no%3Aassignee) | Typos and text edits -- a tech-savvy non-programmer can fix these. |
-| [**level 1**](https://github.com/OdyseeTeam/odysee-frontend/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+label%3A%22level%3A+1%22+no%3Aassignee) | Programming issues that require little knowledge of how the Odysee app works. |
+| Level (in progress)                                                                                                                                         | Description                                                                                         |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| [**level 0**](https://github.com/OdyseeTeam/odysee-frontend/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+label%3A%22level%3A+0%22+no%3Aassignee) | Typos and text edits -- a tech-savvy non-programmer can fix these.                                  |
+| [**level 1**](https://github.com/OdyseeTeam/odysee-frontend/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+label%3A%22level%3A+1%22+no%3Aassignee) | Programming issues that require little knowledge of how the Odysee app works.                       |
 | [**level 2**](https://github.com/OdyseeTeam/odysee-frontend/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+label%3A%22level%3A+2%22+no%3Aassignee) | Issues of average difficulty that require the developer to dig into how the app works a little bit. |
-| [**level 3**](https://github.com/OdyseeTeam/odysee-frontend/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+label%3A%22level%3A+3%22+no%3Aassignee) | Issues that are likely too tricky to be level 2 or require more thinking outside of the box. |
-| [**level 4**](https://github.com/OdyseeTeam/odysee-frontend/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+label%3A%22level%3A+4%22+no%3Aassignee) | Big features or really hard issues. |
+| [**level 3**](https://github.com/OdyseeTeam/odysee-frontend/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+label%3A%22level%3A+3%22+no%3Aassignee) | Issues that are likely too tricky to be level 2 or require more thinking outside of the box.        |
+| [**level 4**](https://github.com/OdyseeTeam/odysee-frontend/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+label%3A%22level%3A+4%22+no%3Aassignee) | Big features or really hard issues.                                                                 |
 
 The process of ranking issues is highly subjective. The purpose of sorting issues
 like this is to give contributors a general idea about the type of issues they are
@@ -113,6 +113,7 @@ out [Oxlint's supported editors](https://oxc.rs/docs/guide/usage/linter/editors.
 ### Code Formatting
 
 <!-- Via the vite-plus plugin -->
+
 Project's sources are formatted using [oxfmt](https://github.com/oxc-project/oxc).
 
 Staged files are automatically formatted before commit via the pre-commit hook.
@@ -147,13 +148,14 @@ debugging:
 
 After deciding what to work on, you can fork this repository, make your changes,
 and submit a pull request.
-  - A contributor wanting to reserve an issue in advance can leave a comment
-    saying that they're working on it. Contributors should respect other people's
-    efforts to complete issues in a timely manner and, therefore, not begin working
-    on anything reserved (or updated) within the last 3 days. If someone has been
-    officially assigned an issue via GitHub's assignment system, it is also not
-    available. Contributors are encouraged to ask if they have any questions about
-    issue availability.
+
+- A contributor wanting to reserve an issue in advance can leave a comment
+  saying that they're working on it. Contributors should respect other people's
+  efforts to complete issues in a timely manner and, therefore, not begin working
+  on anything reserved (or updated) within the last 3 days. If someone has been
+  officially assigned an issue via GitHub's assignment system, it is also not
+  available. Contributors are encouraged to ask if they have any questions about
+  issue availability.
 - Once the pull request is visible, a team member will review it and make sure
   it is up to our standards. At this point, the contributor may have to change
   their code based on our suggestions and comments.
