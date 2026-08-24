@@ -138,11 +138,10 @@ If you also want IDE integration, check out
 There are a few tools integrated to the project that will ease the process of
 debugging:
 
-- [Chrome DevTools](https://developer.chrome.com/devtools)
+- [Chrome DevTools](developer.chrome.com/docs/devtools)
   - Also available for the main process as a
     [remote target](chrome://inspect/#devices).
-- [React DevTools](https://github.com/facebook/react-devtools)
-- [Redux DevTools](https://github.com/gaearon/redux-devtools)
+- [Vite DevTools](https://devtools.vite.dev)
 
 ## Submit a Pull Request
 
