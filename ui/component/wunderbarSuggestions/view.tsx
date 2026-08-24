@@ -5,7 +5,6 @@ import * as ICONS from 'constants/icons';
 import * as SETTINGS from 'constants/settings';
 import React from 'react';
 import classnames from 'classnames';
-import Icon from 'component/common/icon';
 import { isURIValid, normalizeURI, parseURI } from 'util/lbryURI';
 import { Combobox, ComboboxInput, ComboboxPopover, ComboboxList, ComboboxOption } from 'component/common/combobox';
 import useLighthouse from 'effects/use-lighthouse';
@@ -68,9 +67,8 @@ export default function WunderBarSuggestions(props: Props) {
   const urlParams = new URLSearchParams(search);
   const queryFromUrl = urlParams.get('q') || '';
   const inputRef = React.useRef<ElementRef<typeof ComboboxInput> | null>(null);
-  const viewResultsRef = React.useRef<ElementRef<typeof Button> | null>(null);
   const exploreTagRef = React.useRef<ElementRef<typeof Button> | null>(null);
-  const isFocused = isRefFocused(inputRef) || isRefFocused(viewResultsRef) || isRefFocused(exploreTagRef);
+  const isFocused = isRefFocused(inputRef) || isRefFocused(exploreTagRef);
   const [term, setTerm] = React.useState(queryFromUrl);
   const [debouncedTerm, setDebouncedTerm] = React.useState('');
   const searchSize = isMobile ? 20 : 5;
@@ -331,25 +329,37 @@ export default function WunderBarSuggestions(props: Props) {
         onSubmit={() => handleSelect(term)}
       >
         <Combobox className="wunderbar" onSelect={handleSelect} openOnFocus>
-          <Icon icon={ICONS.SEARCH} />
-          <ComboboxInput
-            ref={inputRef}
-            className="wunderbar__input"
-            placeholder={__('Search')}
-            onChange={(e) => setTerm(e.target.value)}
-            value={term}
-          />
-          {term && (
-            <Button
-              icon={ICONS.REMOVE}
-              aria-label={__('Clear')}
-              button="alt"
-              className="wunderbar__clear"
-              onClick={() => {
-                setTerm('');
-              }}
+          <div className="wunderbar__input-wrapper">
+            <ComboboxInput
+              ref={inputRef}
+              className="wunderbar__input"
+              placeholder={__('Search')}
+              onChange={(e) => setTerm(e.target.value)}
+              value={term}
             />
-          )}
+            {term && (
+              <Button
+                icon={ICONS.REMOVE}
+                aria-label={__('Clear')}
+                button="alt"
+                className="wunderbar__clear"
+                onClick={() => {
+                  setTerm('');
+                }}
+              />
+            )}
+          </div>
+          <Button
+            type="submit"
+            icon={ICONS.SEARCH}
+            aria-label={__('Search')}
+            title={__('Search')}
+            className="wunderbar__search"
+            onClick={(e) => {
+              e.preventDefault();
+              handleSelect(term);
+            }}
+          />
 
           {isFocused && term && (
             <ComboboxPopover
@@ -377,20 +387,19 @@ export default function WunderBarSuggestions(props: Props) {
                   : null}
               </ComboboxList>
 
-              <hr className="wunderbar__top-separator" />
+              {!noBottomLinks && term && (
+                <>
+                  <hr className="wunderbar__top-separator" />
 
-              {!noBottomLinks && (
-                <div className="wunderbar__bottom-links">
-                  <ComboboxOption value={term} className="wunderbar__more-results">
-                    <Button ref={viewResultsRef} button="link" label={__('View All Results')} />
-                  </ComboboxOption>
-                  <ComboboxOption value={`${TAG_SEARCH_PREFIX}${term}`} className="wunderbar__more-results">
-                    <Button ref={exploreTagRef} className="wunderbar__tag-search" button="link">
-                      {__('Search tag')}
-                      <div className="tag">{term.split(' ').join('')}</div>
-                    </Button>
-                  </ComboboxOption>
-                </div>
+                  <div className="wunderbar__bottom-links">
+                    <ComboboxOption value={`${TAG_SEARCH_PREFIX}${term}`} className="wunderbar__more-results">
+                      <Button ref={exploreTagRef} className="wunderbar__tag-search" button="link">
+                        {__('Search tag')}
+                        <div className="tag">{term.split(' ').join('')}</div>
+                      </Button>
+                    </ComboboxOption>
+                  </div>
+                </>
               )}
             </ComboboxPopover>
           )}
