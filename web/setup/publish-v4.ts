@@ -234,10 +234,14 @@ export async function makeV4UploadRequest(token: string, params: FileUploadSdkPa
 
       switch (status.status) {
         case 'success': {
-          const claimId =
-            (status.sdkResult as any)?.outputs?.[0]?.claim_id || (status.sdkResult as any)?.claim_id || params.claim_id;
+          const output = (status.sdkResult as any)?.outputs?.[0] || (status.sdkResult as any);
+          const claimId = output?.claim_id || params.claim_id;
+          const sdHash = output?.value?.source?.sd_hash || (status.sdkResult as any)?.sd_hash;
+          const channelUrl = output?.signing_channel?.canonical_url || params.channel;
+          const claimUrl = output?.canonical_url || output?.permanent_url;
+
           if (params.hlsPackage && claimId) {
-            uploadHlsPackage(token, claimId, params.hlsPackage).catch(() => {});
+            uploadHlsPackage(token, claimId, params.hlsPackage, { sdHash, channelUrl, claimUrl }).catch(() => {});
           }
           dispatch(remove(guid));
           return status.sdkResult;

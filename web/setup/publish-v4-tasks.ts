@@ -470,11 +470,19 @@ export function yieldThread(durationMs: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, durationMs));
 }
 
-export async function uploadHlsPackage(authToken: string, claimId: string, hlsPackage: any): Promise<boolean> {
+export async function uploadHlsPackage(
+  authToken: string,
+  claimId: string,
+  hlsPackage: any,
+  meta?: { sdHash?: string; channelUrl?: string; claimUrl?: string }
+): Promise<boolean> {
   if (!hlsPackage || !claimId) return false;
   try {
     const formData = new FormData();
     formData.append('claim_id', claimId);
+    if (meta?.sdHash) formData.append('sd_hash', meta.sdHash);
+    if (meta?.channelUrl) formData.append('channel_url', meta.channelUrl);
+    if (meta?.claimUrl) formData.append('claim_url', meta.claimUrl);
     formData.append(
       'master.m3u8',
       new Blob([hlsPackage.masterPlaylist], { type: 'application/x-mpegURL' }),
