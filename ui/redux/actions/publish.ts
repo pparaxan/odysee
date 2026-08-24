@@ -595,8 +595,6 @@ export const doUpdateFile = (file: WebFile, clearName: boolean = true) => {
     }
 
     // --- File Path ---
-    // If electron, we'll set filePath to the path string because SDK is handling publishing.
-    // File.path will be undefined from web due to browser security, so it will default to the File Object.
     formUpdates.filePath = selectedFilePath;
     // --- Finalize ---
     dispatch({
