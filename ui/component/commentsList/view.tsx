@@ -31,6 +31,7 @@ import {
 import {
   selectTopLevelCommentsForUri,
   selectTopLevelTotalPagesForUri,
+  selectLastFetchedTopLevelPageForUri,
   selectIsFetchingComments,
   selectIsFetchingTopLevelComments,
   selectIsFetchingReacts,
@@ -117,13 +118,13 @@ export default function CommentList(props: Props) {
   const threadCommentAncestors = useAppSelector((state) => selectCommentAncestorsForId(state, threadCommentId));
   const topLevelComments: Array<any> = useAppSelector((state) => selectTopLevelCommentsForUri(state, uri));
   const topLevelTotalPages = useAppSelector((state) => selectTopLevelTotalPagesForUri(state, uri));
+  const currentFetchedPage = useAppSelector((state) => selectLastFetchedTopLevelPageForUri(state, uri));
   const totalComments = useAppSelector((state) => selectTotalCommentsCountForUri(state, uri));
   const scheduledState = useAppSelector((state) => selectScheduledStateForUri(state, uri));
   const isMobile = useIsMobile();
   const isSmallScreen = useIsSmallScreen();
   const urlParams = new URLSearchParams(search);
   const isShortsParam = urlParams.get('view') === 'shorts';
-  const currentFetchedPage = Math.ceil(topLevelComments.length / COMMENT_PAGE_SIZE_TOP_LEVEL);
   const spinnerRef = React.useRef<HTMLDivElement>(null);
   const commentListRef = React.useRef<HTMLUListElement>(null);
   const threadRedirect = React.useRef(false);
@@ -321,7 +322,7 @@ export default function CommentList(props: Props) {
   }, [linkedCommentId, threadCommentId]);
   // Infinite scroll
   useEffect(() => {
-    if (topLevelComments.length === 0) return;
+    if (currentFetchedPage === 0) return;
 
     function shouldFetchNextPage(page, topLevelTotalPages, yPrefetchPx = 1000) {
       if (!spinnerRef || !spinnerRef.current) return false;
@@ -342,18 +343,18 @@ export default function CommentList(props: Props) {
     }
 
     const handleCommentScroll = debounce(() => {
-      if (shouldFetchNextPage(page, topLevelTotalPages)) {
+      if (page === currentFetchedPage && shouldFetchNextPage(page, topLevelTotalPages)) {
         setDebouncedUri(uri);
         setInitialPageFetch(true);
       }
     }, DEBOUNCE_SCROLL_HANDLER_MS);
 
-    if (!didInitialPageFetch) {
-      handleCommentScroll();
-      setInitialPageFetch(true);
-    }
+    if (hasDefaultExpansion && !isFetchingComments && moreBelow) {
+      if (page === currentFetchedPage && shouldFetchNextPage(page, topLevelTotalPages)) {
+        setDebouncedUri(uri);
+        setInitialPageFetch(true);
+      }
 
-    if (hasDefaultExpansion && !isFetchingComments && readyToDisplayComments && moreBelow) {
       const commentsInDrawer = Boolean(document.querySelector('.MuiDrawer-root .card--enable-overflow'));
       const scrollingElement = commentsInDrawer ? document.querySelector('.card--enable-overflow') : window;
 
@@ -362,18 +363,7 @@ export default function CommentList(props: Props) {
         return () => scrollingElement.removeEventListener('scroll', handleCommentScroll);
       }
     }
-  }, [
-    topLevelComments,
-    hasDefaultExpansion,
-    didInitialPageFetch,
-    isFetchingComments,
-    isMobile,
-    moreBelow,
-    page,
-    readyToDisplayComments,
-    topLevelTotalPages,
-    uri,
-  ]);
+  }, [currentFetchedPage, hasDefaultExpansion, isFetchingComments, isMobile, moreBelow, page, topLevelTotalPages, uri]);
   const commentProps = {
     isTopLevel: true,
     uri,

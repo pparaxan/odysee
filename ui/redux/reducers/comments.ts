@@ -21,6 +21,7 @@ const defaultState = {
   repliesTotalPagesByParentId: {},
   topLevelCommentsById: {},
   topLevelTotalPagesById: {},
+  lastFetchedTopLevelPageById: {},
   topLevelTotalCommentsById: {},
   fetchedCommentAncestors: {},
   superChatsByUri: {},
@@ -273,6 +274,7 @@ export default handleActions(
 
       const topLevelTotalCommentsById = Object.assign({}, state.topLevelTotalCommentsById);
       const topLevelTotalPagesById = Object.assign({}, state.topLevelTotalPagesById);
+      const lastFetchedTopLevelPageById = Object.assign({}, state.lastFetchedTopLevelPageById);
       const repliesByParentId = Object.assign({}, state.repliesByParentId);
       const totalCommentsById = Object.assign({}, state.totalCommentsById);
       const pinnedCommentsById = Object.assign({}, state.pinnedCommentsById);
@@ -289,7 +291,13 @@ export default handleActions(
         } else {
           totalCommentsById[claimId] = totalItems;
           topLevelTotalCommentsById[claimId] = totalFilteredItems;
-          topLevelTotalPagesById[claimId] = totalPages;
+          topLevelTotalPagesById[claimId] =
+            page === 1 ? totalPages : Math.max(topLevelTotalPagesById[claimId] || 0, totalPages);
+
+          if (typeof page === 'number') {
+            lastFetchedTopLevelPageById[claimId] =
+              page === 1 ? page : Math.max(lastFetchedTopLevelPageById[claimId] || 0, page);
+          }
         }
 
         if (comments) {
@@ -334,6 +342,7 @@ export default handleActions(
         topLevelCommentsById,
         topLevelTotalCommentsById,
         topLevelTotalPagesById,
+        lastFetchedTopLevelPageById,
         repliesByParentId,
         totalCommentsById,
         pinnedCommentsById,
@@ -429,6 +438,7 @@ export default handleActions(
 
       const topLevelTotalCommentsById = Object.assign({}, state.topLevelTotalCommentsById);
       const topLevelTotalPagesById = Object.assign({}, state.topLevelTotalPagesById);
+      const lastFetchedTopLevelPageById = Object.assign({}, state.lastFetchedTopLevelPageById);
       const pinnedCommentsById = Object.assign({}, state.pinnedCommentsById);
       const myReacts = Object.assign({}, state.myReactsByCommentId);
       const othersReacts = Object.assign({}, state.othersReactsByCommentId);
@@ -440,6 +450,7 @@ export default handleActions(
       delete topLevelCommentsById[claimId];
       delete topLevelTotalCommentsById[claimId];
       delete topLevelTotalPagesById[claimId];
+      delete lastFetchedTopLevelPageById[claimId];
       delete pinnedCommentsById[claimId];
       return {
         ...state,
@@ -448,6 +459,7 @@ export default handleActions(
         topLevelCommentsById,
         topLevelTotalCommentsById,
         topLevelTotalPagesById,
+        lastFetchedTopLevelPageById,
         pinnedCommentsById,
         myReactsByCommentId: myReacts,
         othersReactsByCommentId: othersReacts,

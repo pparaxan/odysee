@@ -125,7 +125,7 @@ export function doCommentList(
         : {}),
     })
       .then((result: CommentListResponse) => {
-        const { items: comments, total_items, total_filtered_items, total_pages } = result;
+        const { items: comments, page: fetchedPage = page, total_items, total_filtered_items, total_pages } = result;
 
         const returnResult = () => {
           dispatch({
@@ -138,7 +138,7 @@ export function doCommentList(
               totalPages: total_pages,
               claimId,
               uri,
-              page,
+              page: fetchedPage,
             },
           });
           return result;

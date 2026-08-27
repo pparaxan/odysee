@@ -256,6 +256,10 @@ export const selectTopLevelTotalPagesForUri = (state: State, uri: string) => {
   const claimId = selectClaimIdForUri(state, uri);
   return state.comments.topLevelTotalPagesById[claimId] || 0;
 };
+export const selectLastFetchedTopLevelPageForUri = (state: State, uri: string) => {
+  const claimId = selectClaimIdForUri(state, uri);
+  return state.comments.lastFetchedTopLevelPageById?.[claimId] || 0;
+};
 export const selectRepliesForParentId = (createCachedSelector as any)(
   (state: State, id: string) => id,
   (state: State) => selectState(state).repliesByParentId,
