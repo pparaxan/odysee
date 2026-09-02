@@ -23,6 +23,7 @@ const defaultState = {
   topLevelTotalPagesById: {},
   lastFetchedTopLevelPageById: {},
   topLevelTotalCommentsById: {},
+  listErrorsByClaimId: {},
   fetchedCommentAncestors: {},
   superChatsByUri: {},
   pinnedCommentsById: {},
@@ -257,14 +258,17 @@ export default handleActions(
       };
     },
     [ACTIONS.COMMENT_LIST_STARTED]: (state, action: any) => {
-      const { parentId } = action.data;
+      const { parentId, claimId } = action.data;
       const isLoadingByParentId = Object.assign({}, state.isLoadingByParentId);
+      const listErrorsByClaimId = Object.assign({}, state.listErrorsByClaimId);
 
       if (parentId) {
         isLoadingByParentId[parentId] = true;
+      } else if (claimId) {
+        delete listErrorsByClaimId[claimId];
       }
 
-      return { ...state, isLoading: true, isLoadingByParentId };
+      return { ...state, isLoading: true, isLoadingByParentId, listErrorsByClaimId };
     },
     [ACTIONS.COMMENT_LIST_COMPLETED]: (state: CommentsState, action: any) => {
       const { comments, parentId, totalItems, totalFilteredItems, totalPages, claimId, disabled, page } = action.data;
@@ -429,7 +433,19 @@ export default handleActions(
         isLoading: false,
       };
     },
-    [ACTIONS.COMMENT_LIST_FAILED]: (state: CommentsState, action: any) => ({ ...state, isLoading: false }),
+    [ACTIONS.COMMENT_LIST_FAILED]: (state: CommentsState, action: any) => {
+      const { claimId, parentId, unavailable } = action.data || {};
+      const isLoadingByParentId = Object.assign({}, state.isLoadingByParentId);
+      const listErrorsByClaimId = Object.assign({}, state.listErrorsByClaimId);
+
+      if (parentId) {
+        isLoadingByParentId[parentId] = false;
+      } else if (claimId && unavailable) {
+        listErrorsByClaimId[claimId] = true;
+      }
+
+      return { ...state, isLoading: false, isLoadingByParentId, listErrorsByClaimId };
+    },
     [ACTIONS.COMMENT_LIST_RESET]: (state: CommentsState, action: any) => {
       const { claimId } = action.data;
       const byId = Object.assign({}, state.byId);
@@ -440,6 +456,7 @@ export default handleActions(
       const topLevelTotalPagesById = Object.assign({}, state.topLevelTotalPagesById);
       const lastFetchedTopLevelPageById = Object.assign({}, state.lastFetchedTopLevelPageById);
       const pinnedCommentsById = Object.assign({}, state.pinnedCommentsById);
+      const listErrorsByClaimId = Object.assign({}, state.listErrorsByClaimId);
       const myReacts = Object.assign({}, state.myReactsByCommentId);
       const othersReacts = Object.assign({}, state.othersReactsByCommentId);
 
@@ -452,6 +469,7 @@ export default handleActions(
       delete topLevelTotalPagesById[claimId];
       delete lastFetchedTopLevelPageById[claimId];
       delete pinnedCommentsById[claimId];
+      delete listErrorsByClaimId[claimId];
       return {
         ...state,
         byId,
@@ -461,6 +479,7 @@ export default handleActions(
         topLevelTotalPagesById,
         lastFetchedTopLevelPageById,
         pinnedCommentsById,
+        listErrorsByClaimId,
         myReactsByCommentId: myReacts,
         othersReactsByCommentId: othersReacts,
       };
