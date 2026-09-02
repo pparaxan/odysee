@@ -160,6 +160,10 @@ export const selectCommentIdsForUri = (state: State, uri: string) => {
   const commentIdsByClaimId = selectCommentIdsByClaimId(state);
   return commentIdsByClaimId[claimId];
 };
+export const selectCommentListUnavailableForUri = (state: State, uri: string) => {
+  const claimId = selectClaimIdForUri(state, uri);
+  return Boolean(selectState(state).listErrorsByClaimId?.[claimId]);
+};
 const filterCommentsDepOnList = {
   claimsById: selectClaimsById,
   myClaimIds: selectMyClaimIdsRaw,

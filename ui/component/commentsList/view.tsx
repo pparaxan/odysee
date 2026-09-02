@@ -42,6 +42,7 @@ import {
   selectPinnedCommentsForUri,
   selectCommentForCommentId,
   selectCommentAncestorsForId,
+  selectCommentListUnavailableForUri,
 } from 'redux/selectors/comments';
 import { doCommentReset, doCommentList, doCommentById, doCommentReactList } from 'redux/actions/comments';
 import { doPopOutInlinePlayer } from 'redux/actions/content';
@@ -118,6 +119,7 @@ export default function CommentList(props: Props) {
   const topLevelComments: Array<any> = useAppSelector((state) => selectTopLevelCommentsForUri(state, uri));
   const topLevelTotalPages = useAppSelector((state) => selectTopLevelTotalPagesForUri(state, uri));
   const totalComments = useAppSelector((state) => selectTotalCommentsCountForUri(state, uri));
+  const commentListUnavailable = useAppSelector((state) => selectCommentListUnavailableForUri(state, uri));
   const scheduledState = useAppSelector((state) => selectScheduledStateForUri(state, uri));
   const isMobile = useIsMobile();
   const isSmallScreen = useIsSmallScreen();
@@ -143,6 +145,7 @@ export default function CommentList(props: Props) {
   }, []);
   const totalUnfilteredComments = totalComments > 0 ? totalComments - uiFilteredComments.length : totalComments;
   const totalFetchedComments = allCommentIds ? allCommentIds.length : 0;
+  const commentsUnavailable = commentListUnavailable && totalFetchedComments === 0;
   const moreBelow = page < topLevelTotalPages;
   const title = getCommentsListTitle(totalUnfilteredComments);
   const threadDepthLevel = isMobile || isShortsParam ? 3 : 10;
@@ -402,7 +405,11 @@ export default function CommentList(props: Props) {
       titleActions={<CommentActionButtons {...actionButtonsProps} />}
       actions={
         <>
-          <CommentCreate uri={uri} />
+          {!commentsUnavailable && <CommentCreate uri={uri} />}
+
+          {commentsUnavailable && (
+            <Empty padded text={__('Comments are temporarily unavailable. Please try again later.')} />
+          )}
 
           {threadCommentId && threadComment && (
             <span className="comment__actions comment__thread-links">
@@ -423,9 +430,11 @@ export default function CommentList(props: Props) {
             </span>
           )}
 
-          {commentsEnabledSetting && !isFetchingComments && !totalUnfilteredComments && !threadCommentId && (
-            <Empty padded text={__('That was pretty deep. What do you think?')} />
-          )}
+          {!commentsUnavailable &&
+            commentsEnabledSetting &&
+            !isFetchingComments &&
+            !totalUnfilteredComments &&
+            !threadCommentId && <Empty padded text={__('That was pretty deep. What do you think?')} />}
 
           <ul
             ref={commentListRef}
